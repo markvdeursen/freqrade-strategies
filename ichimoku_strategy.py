@@ -13,15 +13,16 @@ class Ichimoku(IStrategy):
     """
 
     minimal_roi = {
-        "0":  1
+        "90": 0.04,
+        "60": 0.05,
+        "30": 0.06
     }
-
-    stoploss = -0.1
 
     # Optimal timeframe for the strategy
     timeframe = '5m'
 
     # trailing stoploss
+    stoploss = -0.025
     trailing_stop = True
     trailing_stop_positive = 0.01
     trailing_stop_positive_offset = 0.02
@@ -47,11 +48,11 @@ class Ichimoku(IStrategy):
         'main_plot': {
             'senkou_a': {'color': 'green'},
             'senkou_b': {'color': 'red'},
+            'tenkan': {'color': 'orange'},
+            'kijun': {'color': 'blue'},
         },
         'subplots': {
-            "MACD": {
-                'macd': {'color': 'blue'},
-                'macdsignal': {'color': 'orange'},
+            "Moving Avarages": {
             },
             "RSI": {
                 'rsi': {'color': 'red'},
@@ -83,10 +84,15 @@ class Ichimoku(IStrategy):
 
     # Implementeer de koop- en verkooplogica
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        """
+        (dataframe['close'] > dataframe['senkou_a']) &
+        
+        
+        """
         # Fine-tune de kooplogica voor Bitcoin
         dataframe.loc[
-            (dataframe['tenkan'] > dataframe['kijun']) &
-            (dataframe['close'] > dataframe['cloud']) &
+            (dataframe['tenkan'] > dataframe['kijun']) & # Tekan-sen (Conversion line) boven Kijun-sen (Base line)
+            (dataframe['close'] > dataframe['cloud_green']) & # Boven de cloud
             (dataframe['close'] > dataframe['senkou_a']) &
             (dataframe['volume'] > dataframe['volume'].rolling(window=20).mean()),  # Koop als het volume boven het gemiddelde ligt
             'enter_long'
