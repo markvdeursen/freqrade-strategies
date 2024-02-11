@@ -22,7 +22,7 @@ class Ichimoku(IStrategy):
     timeframe = '5m'
 
     # trailing stoploss
-    stoploss = -0.025
+    stoploss = -0.015
     trailing_stop = True
     trailing_stop_positive = 0.01
     trailing_stop_positive_offset = 0.02
